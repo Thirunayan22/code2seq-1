@@ -112,6 +112,8 @@ class ModelRunner:
 
         for iteration in range(self.config.NUM_EPOCHS):
             pbar = tqdm.tqdm(total=self.num_training_examples)
+
+            # NOTE IMPORTANT SOURCE LOGIC AREA WHERE INDIVIDUAL ELEMENTS FROM THE DATASET ARE PASSED INTO THE MODEL 
             for input_tensors in dataset:
                 target_lengths = input_tensors[reader.TARGET_LENGTH_KEY]
                 target_index = input_tensors[reader.TARGET_INDEX_KEY]

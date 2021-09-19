@@ -15,7 +15,7 @@ class JavaExtractor:
 
     @staticmethod
     def post_request(url, code_string):
-        return requests.post(url, data=json.dumps({"code": code_string, "decompose": True}, separators=(',', ':')))
+        return requests.post(url,timeout=10000, data=json.dumps({"code": code_string, "decompose": True}, separators=(',', ':')))
 
     def extract_paths(self, code_string):
         response = self.post_request(self.extractor_api_url, code_string)

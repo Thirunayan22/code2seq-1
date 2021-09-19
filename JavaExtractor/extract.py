@@ -93,3 +93,6 @@ if __name__ == '__main__':
         if len(subdirs) == 0:
             subdirs = [args.dir]
         ExtractFeaturesForDirsList(args, subdirs)
+
+# NOTE - THE JAVA AST EXTRACTOR IS WRITTEN IN JAVA  AND IS IN THE FOLDER JavaExtractor/j_predict and it is extracting for a file but verify 2 times
+# NOTE - and also the extraction is made available for both directories and files

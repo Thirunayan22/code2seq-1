@@ -185,6 +185,7 @@ class Reader:
                 PATH_STRINGS_KEY: path_strings, PATH_TARGET_STRINGS_KEY: path_target_strings
                 }
 
+    # NOTE : IMPORTANT AREA IN DATASET WHERE THE READER METHOD INITIALIZES AND RETURNS THE DATASET
     def get_dataset(self):
         self.init_dataset()
         return self.dataset
