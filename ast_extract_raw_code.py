@@ -88,11 +88,11 @@ class extractAST:
         if not os.path.exists(self.train_data_file):
             raise Exception("Generate raw ast file before running preprocessing function")
 
-        target_hist_command = f"cat {self.train_data_file} | cut -d' ' -f1 | tr '|' '\n' | awk 'cccccc' > {self.target_histogram_file}"
+        target_hist_command = f"cat {self.train_data_file} | cut -d' ' -f1 | tr '|' '\\n' | awk " + " '{n[$0]++} END {for (i in n) print i,n[i]}' > "  + f"{self.target_histogram_file}"
 
-        subtoken_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\n' | cut -d',' -f1,3 | tr ',|' '\n' | awk" + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.source_subtoken_histogram}"
+        subtoken_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f1,3 | tr ',|' '\n' | awk" + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.source_subtoken_histogram}"
 
-        node_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\n' | cut -d',' -f2 | tr '|' '\n' | awk"  + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.node_histogram_file}"
+        node_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f2 | tr '|' '\n' | awk"  + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.node_histogram_file}"
         
         generate_target_histogram_status = os.system(target_hist_command)
         # timer = Timer(60*60,kill,[generate_target_histogram])
