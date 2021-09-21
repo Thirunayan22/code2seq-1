@@ -113,8 +113,8 @@ if __name__ == '__main__':
     parser.add_argument("--save_file",required=True)
     args = parser.parse_args()
     
-    test_java_file_path = "./Input.source"
-    ast_extractor = extractAST(dataset_dir="./generated_ast_dataset")
+    test_java_file_path = "Input.source"
+    ast_extractor = extractAST(dataset_dir="generated_ast_dataset")
 
     save_output = json.loads(args.save_file.lower())
     ast_extracted_output = ast_extractor.extract_from_file(test_java_file_path,save_output=save_output)
