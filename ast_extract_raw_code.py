@@ -59,7 +59,7 @@ class extractAST:
 
         if save_output:
             with open(f"{self.train_data_file}","a+") as output_file:
-                sleeper = subprocess.Popen(file_extraction_command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                sleeper = subprocess.Popen(file_extraction_command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,)
                 extracted_ast_output = sleeper.communicate()[0].rstrip()
                 timer = Timer(60*60,kill,[sleeper])
 
@@ -68,7 +68,7 @@ class extractAST:
 
         else:
             
-            sleeper = subprocess.Popen(file_extraction_command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            sleeper = subprocess.Popen(file_extraction_command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             extracted_ast_output = sleeper.communicate()[0].rstrip()
             timer = Timer(60*60,kill,[sleeper])
 
