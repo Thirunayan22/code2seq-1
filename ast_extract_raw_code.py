@@ -27,7 +27,7 @@ class extractAST:
             with open(f"{self.train_data_file}","w+") as train_dataset_file:
                 pass
 
-            with open(f"{self.target_histogram_file}","w+") as targe_histogram_file:
+            with open(f"{self.target_histogram_file}","w+") as target_histogram_file:
                 pass
 
             with open(f"{self.source_subtoken_histogram}","w+") as source_subtoken_hist_file:
@@ -75,7 +75,7 @@ class extractAST:
         print("Ending function")
         return extracted_ast_output
     
-    def preprocess_ast(self,extracted_ast):
+    def preprocess_ast(self):
 
         """ 
         preprocesses the contents of a given ast file to create histgram and 
@@ -85,6 +85,8 @@ class extractAST:
             extracted_ast : generated ast from source code
 
         """
+        if not os.path.exists(self.train_data_file):
+            raise Exception("Generate raw ast file before running preprocessing function")
 
         target_hist_command = f"cat {self.train_data_file} | cut -d' ' -f1 | tr '|' '\n' | awk 'cccccc' > {self.target_histogram_file}"
 
@@ -121,7 +123,7 @@ if __name__ == '__main__':
     # print(f"AST extracted output : {ast_extracted_output}")
 
     print("Generating Histograms...")
-    ast_extractor.preprocess_ast(ast_extracted_output)
+    ast_extractor.preprocess_ast()
 
 
 
