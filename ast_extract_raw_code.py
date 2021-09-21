@@ -103,9 +103,9 @@ class extractAST:
         generate_node_histogram_status = os.system(node_hist_command)
         # timer = Timer(60*60,kill,[generate_node_histogram])
 
-        print("Target Histogram Execution Status : ",bool(generate_target_histogram_status))
-        print("Subtoken Histogram Execution Status : ",bool(generate_subtoken_histogram_status))
-        print("Node Histogram Execution Status : ",bool(generate_node_histogram_status))
+        print("Target Histogram Execution Status : ",generate_target_histogram_status)
+        print("Subtoken Histogram Execution Status : ",generate_subtoken_histogram_status)
+        print("Node Histogram Execution Status : ",generate_node_histogram_status)
 
 if __name__ == '__main__':
 
