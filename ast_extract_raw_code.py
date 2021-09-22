@@ -1,6 +1,7 @@
 import os
 import json
 import common
+import platform
 import subprocess
 from threading import Timer
 from argparse import ArgumentParser
@@ -22,25 +23,25 @@ class extractAST:
         
         self.dataset_dir = dataset_dir
 
+
+
         self.train_data_file = f"{self.dataset_dir}/train_ast.raw.txt"
         self.target_histogram_file = f"{self.dataset_dir}/train_ast.histo.tgt.c2s"
         self.source_subtoken_histogram_file = f"{self.dataset_dir}/train_ast.histo.ori.c2s"
         self.node_histogram_file = f"{self.dataset_dir}/train_ast.histo.node.c2s"
 
-
         if not os.path.exists(self.dataset_dir):
             os.mkdir(self.dataset_dir)
-            with open(f"{self.train_data_file}","w+") as train_dataset_file:
-                pass
 
-            with open(f"{self.target_histogram_file}","w+") as target_histogram_file:
-                pass
+        else:
 
-            with open(f"{self.source_subtoken_histogram_file}", "w+") as source_subtoken_hist_file:
-                pass
+            if len(os.listdir(self.dataset_dir)) > 0 :
+                print("Existing Histogram and .c2s dataset files found, deleting all old files...")
+                for file in os.listdir(self.dataset_dir):
+                    file_path = os.path.join(self.dataset_dir,file)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
 
-            with open(f"{self.node_histogram_file}","w+") as node_histogram_file:
-                pass
         
 
 
@@ -90,27 +91,30 @@ class extractAST:
             extracted_ast : generated ast from source code
 
         """
+
+
+
         if not os.path.exists(self.train_data_file):
             raise Exception("Generate raw ast file before running preprocessing function")
 
-        target_hist_command = f"cat {self.train_data_file} | cut -d' ' -f1 | tr '|' '\\n' | awk " + " '{n[$0]++} END {for (i in n) print i,n[i]}' > "  + f"{self.target_histogram_file}"
+        # The preprocess_wsl_commands.sh file contains the bash commands for preprocessing along with the output file paths
+        histogram_extraction_command = "./preprocess_wsl_commands.sh"
 
-        subtoken_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f1,3 | tr ',|' '\n' | awk" + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.source_subtoken_histogram_file}"
+        if platform.system().lower() == "windows" :
 
-        node_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f2 | tr '|' '\n' | awk"  + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.node_histogram_file}"
-        
-        generate_target_histogram_status = os.system(target_hist_command)
-        # timer = Timer(60*60,kill,[generate_target_histogram])
+            try:
+                print("Inside WSL Execution")
+                histogram_extraction_command = 'wsl ' + f'{histogram_extraction_command}'
 
-        generate_subtoken_histogram_status = os.system(subtoken_hist_command)
-        # timer = Timer(60*60,kill,[generate_subtoken_histogram])
+            except Exception as e:
+                print(e)
+                raise Exception("Please check whether you have WSL installed on your windows machine")
 
-        generate_node_histogram_status = os.system(node_hist_command)
-        # timer = Timer(60*60,kill,[generate_node_histogram])
+        print("Histogram Execution Command : ",histogram_extraction_command)
 
-        print("Target Histogram Execution Status : ",generate_target_histogram_status)
-        print("Subtoken Histogram Execution Status : ",generate_subtoken_histogram_status)
-        print("Node Histogram Execution Status : ",generate_node_histogram_status)
+        generate_histogram_status = os.system(histogram_extraction_command)
+
+        print("Histogram Command Execution Status : ",generate_histogram_status)
 
 
     def preprocess_ast(self):

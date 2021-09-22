@@ -3,23 +3,27 @@ activating 29
 pending 366
 has 16
 global 1103
+table 2
 sequence 312
 collectors 26
 exception 127
 an 17
 after 21
+} 2
+group 1
 computed 95
 advance 4
 match 63
-version 294
-to 189
+version 293
+to 188
 unassigned 145
 allocation 1120
-sync 780
+sync 778
 clear 21
 already 34
 available 14
 as 103
+wait 1
 numbers 312
 map 203
 int 72
@@ -27,38 +31,42 @@ copy 156
 insync 203
 out 143
 values 42
-collect 15
+collect 14
 compute 37
 applying 68
-true 230
+true 229
 max 23
 function 34
 does 20
 id 1054
+equals 1
 blocking 22
 state 764
 if 52
 and 20
-all 136
+all 135
 applied 139
 contains 164
+to 1
 the 60
 node 126
 but 155
 when 29
 states 23
 invalid 17
+collect 1
 in 974
 tracking 14
 initializing 262
 io 36
+false 2
 forbidden 6
 cluster 294
 min 72
 one 12
 is 245
 filter 43
-result 152
+result 151
 exist 20
 it 20
 accept 15
@@ -72,13 +80,16 @@ with 27
 object 68
 above 29
 mode 526
+true 1
 . 17
 of 68
 string 435
 unexpected 25
+invariant 9
 lcps 38
 updating 36
 information 14
+checkpoints 2
 handoff 187
 less 17
 have 56
@@ -87,6 +98,7 @@ entries 75
 on 66
 knowledge 7
 notify 21
+version 1
 context 217
 than 45
 ops 41
@@ -100,7 +112,7 @@ that 153
 objectnotify 3
 fallback 49
 index 49
-checkpoint 2997
+checkpoint 2991
 last 33
 update 197
 matching 14
@@ -108,6 +120,7 @@ seq 145
 current 99
 logger 102
 <NUM> 38
+result 1
 started 14
 set 223
 aid 31
@@ -116,7 +129,7 @@ due 7
 trace 111
 reducer 35
 blocks 21
-group 425
+group 424
 advancement 49
 shard 435
 reason 19
@@ -124,11 +137,12 @@ code 50
 pre 214
 apply 18
 there 14
+master 1
 known 18
-write 104
 progress 151
+write 104
 send 25
-table 498
+table 496
 routing 506
 stream 192
 illegal 23
@@ -144,15 +158,17 @@ relocation 47
 more 16
 ] 192
 METHOD_NAME 557
+get 1
 runnable 37
 calculate 75
+sync 2
 a 7
 interrupted 68
 locally 20
 replication 425
 shards 7
 consumer 22
-checkpoints 905
+checkpoints 903
 copies 14
 still 14
 always 17
@@ -160,9 +176,10 @@ e 77
 empty 66
 builder 11
 waiters 21
-invariant 233
+invariant 224
 ids 333
 value 136
+all 1
 cps 778
 each 57
 key 144
@@ -174,33 +191,36 @@ null 273
 override 16
 math 7
 skipped 22
-equals 142
+equals 141
 should 24
-wait 7
-false 503
+wait 6
+false 501
 long 681
 remove 38
 o 177
 higher 22
 lower 12
-master 43
+master 42
 size 7
 marked 71
 s 32
-no 214
-get 650
+no 212
+get 649
+no 2
 service 126
 operation 11
 add 40
 v 43
-boolean 269
+boolean 268
 void 99
 increased 45
 thats 36
 for 147
+boolean 1
 initialized 18
 uptodate 17
 z 20
+checkpoint 6
 suppress 6
-} 18
+} 16
 primary 852
