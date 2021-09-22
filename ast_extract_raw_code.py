@@ -1,9 +1,10 @@
 import os
 import json
+import common
 import subprocess
 from threading import Timer
 from argparse import ArgumentParser
-
+from preprocess import process_file,save_dictionaries
 
 class extractAST:
 
@@ -13,12 +14,17 @@ class extractAST:
         self.extractor_num_threads = 64
         self.max_path_length = 8
         self.max_path_width = 2
+        self.max_contexts = 200
+        self.max_data_contexts = 200
+        self.subtoken_vocab_size = 186277
+        self.target_vocab_size = 26347
+        self.num_threads = 10
         
         self.dataset_dir = dataset_dir
 
         self.train_data_file = f"{self.dataset_dir}/train_ast.raw.txt"
         self.target_histogram_file = f"{self.dataset_dir}/train_ast.histo.tgt.c2s"
-        self.source_subtoken_histogram = f"{self.dataset_dir}/train_ast.histo.ori.c2s"
+        self.source_subtoken_histogram_file = f"{self.dataset_dir}/train_ast.histo.ori.c2s"
         self.node_histogram_file = f"{self.dataset_dir}/train_ast.histo.node.c2s"
 
 
@@ -30,7 +36,7 @@ class extractAST:
             with open(f"{self.target_histogram_file}","w+") as target_histogram_file:
                 pass
 
-            with open(f"{self.source_subtoken_histogram}","w+") as source_subtoken_hist_file:
+            with open(f"{self.source_subtoken_histogram_file}", "w+") as source_subtoken_hist_file:
                 pass
 
             with open(f"{self.node_histogram_file}","w+") as node_histogram_file:
@@ -75,11 +81,10 @@ class extractAST:
         print("Ending function")
         return extracted_ast_output
     
-    def preprocess_ast(self):
+    def extract_histogram(self):
 
         """ 
-        preprocesses the contents of a given ast file to create histgram and 
-        truncate methods with too many context
+        preprocesses the contents of a given ast file to create histogram
 
         Params:
             extracted_ast : generated ast from source code
@@ -90,7 +95,7 @@ class extractAST:
 
         target_hist_command = f"cat {self.train_data_file} | cut -d' ' -f1 | tr '|' '\\n' | awk " + " '{n[$0]++} END {for (i in n) print i,n[i]}' > "  + f"{self.target_histogram_file}"
 
-        subtoken_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f1,3 | tr ',|' '\n' | awk" + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.source_subtoken_histogram}"
+        subtoken_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f1,3 | tr ',|' '\n' | awk" + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.source_subtoken_histogram_file}"
 
         node_hist_command = f"cat {self.train_data_file} | cut -d' ' -f2- | tr ' ' '\\n' | cut -d',' -f2 | tr '|' '\n' | awk"  + " '{n[$0]++} END {for (i in n) print i,n[i]}' > " + f"{self.node_histogram_file}"
         
@@ -107,6 +112,42 @@ class extractAST:
         print("Subtoken Histogram Execution Status : ",generate_subtoken_histogram_status)
         print("Node Histogram Execution Status : ",generate_node_histogram_status)
 
+
+    def preprocess_ast(self):
+
+        """
+        Takes in a histogram, preprocesses and truncates AST paths which are too long
+        """
+
+        subtoken_to_count_hist = common.Common.load_histogram(path=self.source_subtoken_histogram_file,
+                                                              max_size=int(self.subtoken_vocab_size))
+        node_to_count_hist = common.Common.load_histogram(path=self.node_histogram_file,
+                                                          max_size=None)
+
+        target_to_count_hist = common.Common.load_histogram(path=self.target_histogram_file,
+                                                            max_size=self.target_vocab_size)
+
+
+        num_training_examples = 0
+        dataset_name = f"{self.dataset_dir}/{self.dataset_dir}"
+        num_examples = process_file(file_path=self.train_data_file,
+                                    data_file_role="test",
+                                    dataset_name=dataset_name,
+                                    max_contexts=self.max_contexts,
+                                    max_data_contexts=self.max_data_contexts
+                                    )
+
+        save_dictionaries(dataset_name=dataset_name,
+                          subtoken_to_count=subtoken_to_count_hist,
+                          node_to_count=node_to_count_hist,
+                          target_to_count=target_to_count_hist,
+                          max_contexts=self.max_data_contexts,
+                          num_examples=num_training_examples)
+
+
+        return num_examples
+
+
 if __name__ == '__main__':
 
     parser =  ArgumentParser()
@@ -120,10 +161,14 @@ if __name__ == '__main__':
     ast_extracted_output = ast_extractor.extract_from_file(test_java_file_path,save_output=save_output)
 
     print("AST Extracted")
-    # print(f"AST extracted output : {ast_extracted_output}")
+    print(f"AST extracted output : {ast_extracted_output}")
 
     print("Generating Histograms...")
+    ast_extractor.extract_histogram()
+
+    print("Using Generated Histograms To Preprocess And Shorten Paths")
     ast_extractor.preprocess_ast()
+
 
 
 
