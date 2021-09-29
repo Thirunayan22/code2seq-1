@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 import os
 import json
 import common
@@ -7,11 +10,17 @@ from threading import Timer
 from argparse import ArgumentParser
 from preprocess import process_file,save_dictionaries
 
+
+
 class extractAST:
 
-    def __init__(self,dataset_dir):
+    def __init__(self,dataset_dir,extractor_jar_path):
+                 # train_data_file_path,target_histogram_file_path,
+                 # source_subtoken_histogram_file_path, node_histogram_file_path):
 
-        self.extractor_jar_path = "JavaExtractor/JPredict/target/JavaExtractor-0.0.1-SNAPSHOT.jar"
+        # TODO - 2- This can be a reason why the asts are not generated becuase this command cannot be executed properly due to the missing .jar file path
+        # self.extractor_jar_path = c"
+        self.extractor_jar_path = extractor_jar_path
         self.extractor_num_threads = 64
         self.max_path_length = 8
         self.max_path_width = 2
@@ -82,7 +91,7 @@ class extractAST:
         print("Ending function")
         return extracted_ast_output
     
-    def extract_histogram(self):
+    def extract_histogram(self,preprocess_shell_file_path:str):
 
         """ 
         preprocesses the contents of a given ast file to create histogram
@@ -98,7 +107,13 @@ class extractAST:
             raise Exception("Generate raw ast file before running preprocessing function")
 
         # The preprocess_wsl_commands.sh file contains the bash commands for preprocessing along with the output file paths
-        histogram_extraction_command = "./preprocess_wsl_commands.sh"
+        command_shell_file_path = "."
+
+        if preprocess_shell_file_path.startswith("mnt") or preprocess_shell_file_path.startswith("C:\\"):
+            histogram_extraction_command = f"/{preprocess_shell_file_path}"
+        
+        else:
+            histogram_extraction_command = f"./{preprocess_shell_file_path}"
 
         if platform.system().lower() == "windows" :
 
@@ -154,7 +169,7 @@ class extractAST:
 
 if __name__ == '__main__':
 
-    parser =  ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument("--save_file",required=True)
     args = parser.parse_args()
     
@@ -163,12 +178,13 @@ if __name__ == '__main__':
 
     save_output = json.loads(args.save_file.lower())
     ast_extracted_output = ast_extractor.extract_from_file(test_java_file_path,save_output=save_output)
+    preprocess_shell_file_path = "preprocess_wsl_commands.sh"
 
     print("AST Extracted")
     print(f"AST extracted output : {ast_extracted_output}")
 
     print("Generating Histograms...")
-    ast_extractor.extract_histogram()
+    ast_extractor.extract_histogram(preprocess_shell_file_path=preprocess_shell_file_path)
 
     print("Using Generated Histograms To Preprocess And Shorten Paths")
     ast_extractor.preprocess_ast()
