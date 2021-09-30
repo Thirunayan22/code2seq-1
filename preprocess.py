@@ -19,10 +19,10 @@ def save_dictionaries(dataset_name, subtoken_to_count, node_to_count, target_to_
         pickle.dump(target_to_count, file)
         pickle.dump(max_contexts, file)
         pickle.dump(num_examples, file)
-        print('Dictionaries saved to: {}'.format(save_dict_file_path))
+        # print('Dictionaries saved to: {}'.format(save_dict_file_path))
 
 
-def process_file(file_path, data_file_role, dataset_name, max_contexts, max_data_contexts):
+def process_file(file_path, data_file_role, dataset_name, max_contexts, max_data_contexts,print_outputs=False):
     sum_total = 0
     sum_sampled = 0
     total = 0
@@ -49,11 +49,13 @@ def process_file(file_path, data_file_role, dataset_name, max_contexts, max_data
                 total += 1
                 outfile.write(target_name + ' ' + " ".join(contexts) + csv_padding + '\n')
 
-    print('File: ' + file_path)
-    print('Average total contexts: ' + str(float(sum_total) / total))
-    print('Average final (after sampling) contexts: ' + str(float(sum_sampled) / total))
-    print('Total examples: ' + str(total))
-    print('Max number of contexts per word: ' + str(max_unfiltered))
+    if print_outputs:
+        print('File: ' + file_path)
+        print('Average total contexts: ' + str(float(sum_total) / total))
+        print('Average final (after sampling) contexts: ' + str(float(sum_sampled) / total))
+        print('Total examples: ' + str(total))
+        print('Max number of contexts per word: ' + str(max_unfiltered))
+
     return total
 
 

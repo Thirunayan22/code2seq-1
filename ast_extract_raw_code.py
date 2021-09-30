@@ -45,7 +45,6 @@ class extractAST:
         else:
 
             if len(os.listdir(self.dataset_dir)) > 0 :
-                print("Existing Histogram and .c2s dataset files found, deleting all old files...")
                 for file in os.listdir(self.dataset_dir):
                     file_path = os.path.join(self.dataset_dir,file)
                     if os.path.exists(file_path):
@@ -71,7 +70,7 @@ class extractAST:
         kill = lambda process: process.kill()
 
 
-        print(f"Save file mode : {save_output}")
+        # print(f"Save file mode : {save_output}")
 
         if save_output:
             with open(f"{self.train_data_file}","a+") as output_file:
@@ -88,7 +87,6 @@ class extractAST:
             extracted_ast_output = sleeper.communicate()[0].rstrip()
             timer = Timer(60*60,kill,[sleeper])
 
-        print("Ending function")
         return extracted_ast_output
     
     def extract_histogram(self,preprocess_shell_file_path:str):
@@ -118,18 +116,15 @@ class extractAST:
         if platform.system().lower() == "windows" :
 
             try:
-                print("Inside WSL Execution")
                 histogram_extraction_command = 'wsl ' + f'{histogram_extraction_command}'
 
             except Exception as e:
                 print(e)
                 raise Exception("Please check whether you have WSL installed on your windows machine")
 
-        print("Histogram Execution Command : ",histogram_extraction_command)
 
         generate_histogram_status = os.system(histogram_extraction_command)
 
-        print("Histogram Command Execution Status : ",generate_histogram_status)
 
 
     def preprocess_ast(self):
@@ -153,7 +148,8 @@ class extractAST:
                                     data_file_role="test",
                                     dataset_name=dataset_name,
                                     max_contexts=self.max_contexts,
-                                    max_data_contexts=self.max_data_contexts
+                                    max_data_contexts=self.max_data_contexts,
+                                    print_outputs=False
                                     )
 
         save_dictionaries(dataset_name=dataset_name,
